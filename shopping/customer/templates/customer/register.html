@@ -1,0 +1,130 @@
+{% extends 'base.html'  %}
+{% load rest_framework %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+{% endblock head %}
+
+{% block content %}
+
+    <style>
+        .registration-form{
+            margin-left:80px;
+            margin-right:80px;
+        }
+        .btn-style{
+            border-radius:5px;
+        }
+
+        #form-errors{
+            color:red;
+        }
+
+    </style>
+    <form id="register" class="registration-form" action="{% url 'registration' %}" method="POST">
+        {% csrf_token %}
+        <h3  style="text-align: center;" id="form-errors"></h3>
+        {% render_form serializer  %}
+<!--        <input class="btn-primary btn-style" type="submit" value="Register" id = "register-form">-->
+        <button onclick="register()" type="button" class="btn btn-primary btn-style">Register</button>
+        <small>Already have an account ?</small><a href="{% url 'login' %}">Login</a>
+        <br><br>
+    </form>
+
+    <script>
+        element = document.getElementsByTagName("input");
+
+        function register() {
+            var inp;
+
+            var object = {};
+            let myForm = document.getElementById('register');
+            let formData = new FormData(myForm);
+            formData.forEach(function(value, key){
+                object[key] = value;
+            });
+
+            if (element[1].value!="" && element[2].value!="" && element[3].value!="") {
+                fetch(`{% url 'registration' %}`, {
+                    method: "POST",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRF-Token": object['csrfmiddlewaretoken'],
+                        "Content-Type": "application/json; charset=utf-8",
+                    },
+                        credentials: "same-origin",
+                        body: JSON.stringify(object)
+                }).then(function(response){
+                    if (response.ok){
+                        location.href = "{% url 'login' %}"
+                    }
+                });
+            }
+            else {
+                alert("Please fill the details in all the fields.");
+            }
+        }
+
+
+
+        element[1].addEventListener('blur', validateusername);
+        function validateusername(){
+            fetch(`{% url 'validate-username' %}`,{
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-Token": "{{ csrftoken }}",
+                    "Content-Type": "application/json; charset=utf-8",
+                },
+                    credentials: "same-origin",
+                    body: JSON.stringify({"username":element[1].value})
+            }).then(function(response){
+                if (response.status!=200){
+                    document.getElementById("form-errors").innerText = "Username already exists! Try another one..!";
+                }
+                else{
+                    document.getElementById("form-errors").innerText = "Good to go! This username is available.";
+                }
+            }).then(function(){
+                if (element[1].value=="") {
+                    document.getElementById("form-errors").innerText = "You need to to fill username!";
+                }
+            });
+        }
+
+
+
+        element[2].addEventListener('blur', validateemail);
+        function validateemail() {
+            var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            fetch(`{% url 'validate-email' %}`,{
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-Token": "{{ csrftoken }}",
+                    "Content-Type": "application/json; charset=utf-8",
+                },
+                    credentials: "same-origin",
+                    body: JSON.stringify({"email":element[2].value})
+            }).then(function(response){
+
+                if (response.status!=200) {
+                    document.getElementById("form-errors").innerText = "email already exists! Try another one..!";
+                }
+                else{
+                    document.getElementById("form-errors").innerText = "Good to go! This email is available.";
+                }
+            }).then(function(){
+                if (element[2].value == "" ) {
+                    document.getElementById("form-errors").innerText = "You need to fill email address!";
+                }
+                else if (!element[2].value.match(mailformat)) {
+                    document.getElementById("form-errors").innerText = "Invalid Email";
+                }
+                else {
+                    console.log("Valid Email Address!");
+                }
+            });
+        }
+    </script>
+{% endblock %}

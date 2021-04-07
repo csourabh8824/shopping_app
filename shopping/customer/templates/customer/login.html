@@ -1,0 +1,71 @@
+{% extends 'base.html'  %}
+{% load rest_framework %}
+{% block head %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+{% endblock head %}
+
+{% block content %}
+
+    <style>
+        .login-form {
+            margin-left:80px;
+            margin-right:80px;
+        }
+        .btn-style {
+            border-radius:5px;
+        }
+        #form-errors {
+            color:red;
+        }
+    </style>
+
+    <form id="loginform" class="login-form" action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <h3 id="form-errors" style="text-align:center;"></h3>
+        {% render_form serializer  %}
+        <button onclick="login()" type="button" class="btn btn-primary btn-style">Login</button>
+        <small>Don't have an account ? </small><a href="{% url 'registration' %}">Register</a>
+
+        <br><br>
+    </form>
+
+    <script>
+        var myForm = document.getElementById("loginform");
+        var formData = new FormData(myForm);
+        var inputTags = document.getElementsByTagName("input");
+        var object = {};
+        formData.forEach(function(value, key){
+                object[key] = value;
+        });
+
+        function login() {
+
+            if (inputTags[1].value != "" && inputTags[2].value != "") {
+                fetch(`{% url 'login' %}`, {
+                    method: "POST",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRF-Token": object['csrfmiddlewaretoken'],
+                        "Content-Type": "application/json; charset=utf-8",
+                    },
+                        credentials: "same-origin",
+                        body: JSON.stringify({"username":inputTags[1].value,"password":inputTags[2].value})
+                }).then(function(response){
+                console.log(response)
+                    if (response.ok) {
+                        location.href = "{% url 'product-page' %}"
+                    }
+                    else if (response.status==401) {
+                        document.getElementById("form-errors").innerText= "Invalid Credentials. Please register first to login.";
+                    }
+                });
+            }
+            else {
+                   document.getElementById("form-errors").innerText= "Please fill the details to login.";
+            }
+        }
+
+
+
+    </script>
+{% endblock %}

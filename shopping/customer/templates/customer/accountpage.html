@@ -1,0 +1,175 @@
+{% extends 'base.html'  %}
+{% load rest_framework %}
+{% block head %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+{% endblock head %}
+
+{% block content %}
+
+<style>
+    body {
+    background: #5b5b83
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.profile-button {
+    background: rgb(0,0,128);
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #682773
+}
+
+.profile-button:focus {
+    background: #682773;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+
+.labels {
+    font-size: 11px
+}
+form{
+    display: center;
+    margin-left: 350px;
+    margin-right: auto;
+}
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+</style>
+<script>
+      $( function() {
+        $( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
+      } );
+</script>
+<div class="container rounded bg-white mt-5 mb-5">
+
+    <div class="row">
+        <div class="col-md-3 border-right">
+        </div>
+        <form id="accountform" action="" method="post">
+            <div class="col-md-5 ">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Account Settings</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="first name" value="{{user.first_name}}"></div>
+                        <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="{{user.last_name}}" placeholder="surname"></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">PhoneNumber</label><input type="text" class="form-control" placeholder="enter phone number" value={{user.mobile_number}}></div>
+                        <br>
+                        <div class="col-md-12"><label class="labels">Alternate PhoneNumber</label><input type="text" class="form-control" placeholder="enter alternate phone number" value={{user.alternate_mobile_number}}></div>
+                        <br>
+                        <div class="col-md-12"><label class="labels">Email ID</label><input type="text" disabled class="form-control" placeholder="enter email id" value={{user.email}}></div>
+                        <br>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><label class="labels">Gender</label><input type="text" class="form-control" placeholder="gender" value="{{user.gender}}"></div>
+                        <div class="col-md-6"><label class="labels">Birthdate</label><input id="datepicker" type="text" class="form-control" value="{{user.birthdate|date:'Y-m-d'}}" ></div>
+                    </div>
+                    <div class="mt-5 text-center"><button onclick="update()" class="btn btn-primary profile-button" type="button">Update</button></div>
+                    <div class="mt-5 text-center"><button onclick="deleteUserAccount()" class="btn btn-danger" type="button">Delete Account</button></div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+<script>
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    var myForm = document.getElementById("accountform");
+    var formData = new FormData(myForm);
+    var inputTags = document.getElementsByTagName("input");
+
+    function update(){
+        var object = {};
+        object['first_name'] = inputTags[0].value;
+        object['last_name'] = inputTags[1].value;
+        object['mobile_number'] = inputTags[2].value;
+        object['alternate_mobile_number'] = inputTags[3].value;
+        object['email_id'] = inputTags[4].value;
+        object['gender'] = inputTags[5].value;
+        object['birthdate'] = inputTags[6].value;
+        object['csrfmiddlewaretoken'] = getCookie('csrftoken');
+        fetch(`{% url 'account-page' %}`, {
+            method: "PUT",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json; charset=utf-8",
+                "X-CSRFToken":getCookie('csrftoken'),
+            },
+                credentials: "same-origin",
+                body: JSON.stringify(object)
+        }).then(function(response){
+            console.log(response);
+            if (response.ok) {
+                location.href = "{% url 'account-page' %}";
+            }
+        });
+    }
+
+    function deleteUserAccount() {
+        var object = {};
+
+        object['email_id'] = inputTags[4].value;
+
+
+        fetch(`{% url 'deleteuseraccount' %}`,{
+            method: "DELETE",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json; charset=utf-8",
+                "X-CSRFToken":getCookie('csrftoken'),
+            },
+                credentials: "same-origin",
+                body: JSON.stringify(object)
+        }).then(function(response){
+            console.log(response);
+            if (response.ok) {
+                location.href = "{% url 'login' %}";
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}

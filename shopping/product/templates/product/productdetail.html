@@ -1,0 +1,114 @@
+{% extends 'base.html'  %}
+{% load rest_framework %}
+{% block content %}
+
+    <style>
+        body{
+            background-color:#434756;
+        }
+
+        .cart-button {
+            background-color: #212121;
+            color: red;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 900;
+            width: 100%;
+            height: 39px;
+            padding-top: 9px;
+            box-shadow: 0px 5px 10px red;
+        }
+
+
+
+    </style>
+
+    <div class="card container mt-5">
+        <h5 class="card-header text-center" style="width:100%; font-weight:bold;">Product Description</h5>
+        <div class="row">
+            <div class="col-sm">
+                <h5 class="card-title mt-2 text-center" style="font-weight:bold;">{{product.name}}</h5>
+                <img height="400px" width="300px" src="{{ product.image.url }}" >
+            </div>
+            <div class="col-sm text-center">
+                <h5 class="mt-2" style="font-weight:bold;" style="font-weight:bold;">Description:{{product.description}}</h5>
+                <hr>
+                <h6 style="font-weight:bold;">Color : {{product.color}}</h6>
+                <hr>
+                <h6 style="font-weight:bold;">Material : {{product.material}}</h6>
+                <hr>
+                <h6 style="font-weight:bold;">Size : {{product.size}}</h6>
+                <hr>
+                <h6 style="font-weight:bold;">Washable : {{product.washable}}</h6>
+
+            </div>
+            <div class="col-sm" style="margin-top:180px;">
+    <!--            <a href="#"><i class="fas fa-thumbs-up"></i></a>-->
+                <h4 class="pricetag" style="font-weight:bold; margin-left:130px;">price : {{product.price}}</h4>
+                <form id = "addToCart" method="POST">
+
+                    <select class="form-control qty" id="quantity" name="quantity">
+                        <option value="1" >1</option>
+                        <option value="2" >2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <button onclick="addToCart(event)" >ADD TO CART</button>
+                </form>
+
+             </div>
+        </div>
+    </div>
+
+    <script>
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        console.log(getCookie('csrftoken'));
+
+        function addToCart(e){
+            <e class="preventDef"></e>ault();
+            var object = {}
+            let myForm = document.getElementById("addToCart");
+            let formData = new FormData(myForm);
+            var test = document.getElementById("quantity");
+
+            object['quantity']=test.value;
+            object['product_id']={{product.id}};
+            object['csrfmiddlewaretoken'] = getCookie('csrftoken');
+
+
+            fetch(`{% url 'cart-view' %}`, {
+
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-CSRFToken":getCookie('csrftoken'),
+                },
+                    credentials: "same-origin",
+                    body: JSON.stringify(object)
+                }).then(function(response){
+                    console.log(response);
+                    if (response.ok) {
+                        alert("product added in cart");
+                        location.href = "{% url 'product-page' %}";
+                    }
+                });
+        }
+    </script>
+{% endblock  %}

@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'customer',
     'product',
     'cart',
+    'checkout',
+    'card',
 ]
 
 AUTH_USER_MODEL = 'customer.UserProfile'
@@ -151,3 +153,13 @@ REST_AUTH_SERIALIZERS = {
 ACCOUNT_ADAPTER = 'customer.views.Register'
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/rest-auth/loginview/'
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.ERROR: 'alert-danger',
+}
+
+PUBLISHABLE_KEY = 'pk_test_51IQXHgC0lJuuHhdRB7llLdlcRo935FSMQVHh9CRk8586B1nAd7Cdeq49oY1VyU4tiYmi6ePvHeMTGKUHlEwjh18J00AbUWeCPJ'
+SECRET_KEY = 'sk_test_51IQXHgC0lJuuHhdRUIX7nNeU67qw9RmRXScNl3fFsO1IPSRVHFuPGft5vve0XQIS3gBK3ecEHb3McsvIfPlXgeb200qe5FovN8'

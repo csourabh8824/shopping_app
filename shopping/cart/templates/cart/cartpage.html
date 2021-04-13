@@ -1,62 +1,148 @@
 {% extends 'base.html'  %}
 {% load rest_framework %}
 {% block content %}
-<h1 style="color:white; margin-left:350px;">Cart Items:</h1>
-{% for products in cart %}
-    {% if products.user == logged_in_user %}
-        {% for product in products.product.all %}
-        <style>
-            body{
-                background-color:#434756;
-            }
+    <h1 style="color:white; margin-left:350px;">Cart Items:</h1>
+    {% for products in cart %}
+        {% if products.user == logged_in_user %}
+            {% for product in products.product.all %}
+                <style>
+                    body{
+                        background-color:#434756;
+                    }
 
-            .cart-button {
-                background-color: #212121;
-                color: red;
-                margin-top: 10px;
-                font-size: 12px;
-                font-weight: 900;
-                width: 100%;
-                height: 39px;
-                padding-top: 9px;
-                box-shadow: 0px 5px 10px red;
-            }
-        </style>
-        <div class="card container mt-5">
+                    .cart-button {
+                        background-color: #212121;
+                        color: red;
+                        margin-top: 10px;
+                        font-size: 12px;
+                        font-weight: 900;
+                        width: 100%;
+                        height: 39px;
+                        padding-top: 9px;
+                        box-shadow: 0px 5px 10px red;
+                    }
 
-            <h5 class="card-header text-center" style="width:100%; font-weight:bold;">Product</h5>
-            <div class="row">
-                <div class="col-sm">
-                    <h5 class="card-title mt-2 text-center" style="font-weight:bold;"></h5>
-                    <img height="400px" width="300px" src="{{ product.image.url }}" >
+                    hr.new5 {
+                        border: 10px solid green;
+                        border-radius: 5px;
+                    }
+                </style>
+                <div class="card container mt-5">
+
+                    <h5 class="card-header text-center" style="width:100%; font-weight:bold;">Product</h5>
+                    <div class="row">
+                        <div class="col-sm">
+                            <h5 class="card-title mt-2 text-center" style="font-weight:bold;"></h5>
+                            <img height="400px" width="300px" src="{{ product.image.url }}" >
+                        </div>
+                        <div class="col-sm text-center">
+                            <h5 class="mt-2" style="font-weight:bold;" style="font-weight:bold;">Description: {{product.description}}</h5>
+                            <hr>
+                            <h6 style="font-weight:bold;">Color : {{product.color}}</h6>
+                            <hr>
+                            <h6 style="font-weight:bold;">Material : {{product.material}}</h6>
+                            <hr>
+                            <h6 style="font-weight:bold;">Size : {{product.size}}</h6>
+                            <hr>
+                            <h6 style="font-weight:bold;">Washable : {{product.washable}}</h6>
+
+                        </div>
+                        <div class="col-sm" style="margin-top:180px;">
+                <!--            <a href="#"><i class="fas fa-thumbs-up"></i></a>-->
+                            <h4 class="pricetag1" style="font-weight:bold; margin-left:130px;">price : {{product.price}}</h4>
+                            <h4 class="quantity" style="font-weight:bold; margin-left:130px;">Quantity taken : {{products.quantity}}</h4>
+
+                            <a href="{% url 'delete-cart-item' products.id %}" style="font-weight:bold; margin-left:130px;" class="btn btn-outline-danger">Delete Item</a>
+
+                            <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#exampleModal">
+                                Update
+                            </button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Update Quantity</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="update-cart" onsubmit="return false;" action="" method="POST">
+                                                <input hidden id="id-of-product" type="text" value="{{products.id}}">
+                                                <select class="form-control qty" id="quantity" name="quantity">
+                                                    <option value="1" >1</option>
+                                                    <option value="2" >2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <input hidden type="text" id="total" value="">
+                                                <button class="btn btn-outline-success mt-2" onclick="updateCart(event)" >Save</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         </div>
+                    </div>
                 </div>
-                <div class="col-sm text-center">
-                    <h5 class="mt-2" style="font-weight:bold;" style="font-weight:bold;">Description: {{product.description}}</h5>
-                    <hr>
-                    <h6 style="font-weight:bold;">Color : {{product.color}}</h6>
-                    <hr>
-                    <h6 style="font-weight:bold;">Material : {{product.material}}</h6>
-                    <hr>
-                    <h6 style="font-weight:bold;">Size : {{product.size}}</h6>
-                    <hr>
-                    <h6 style="font-weight:bold;">Washable : {{product.washable}}</h6>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
 
-                </div>
-                <div class="col-sm" style="margin-top:180px;">
-        <!--            <a href="#"><i class="fas fa-thumbs-up"></i></a>-->
-                    <h4 class="pricetag1" style="font-weight:bold; margin-left:130px;">price : {{product.price}}</h4>
-                    <h4 class="quantity" style="font-weight:bold; margin-left:130px;">Quantity taken : {{products.quantity}}</h4>
-                    <h4 class="pricetag3" style="font-weight:bold; margin-left:130px;">total : {{products.total}}</h4>
-                    <form id = "addToCart" action="" method="POST">
-                        {% csrf_token %}
+    <script>
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
 
-                    </form>
+        function updateCart(e){
+            e.preventDefault;
+            var object = {}
+            let myForm = document.getElementById("update-cart");
+            let formData = new FormData(myForm);
+            var test = document.getElementById("quantity");
+            var test1 = document.getElementById("id-of-product");
+            var test2 = document.getElementById("total");
 
-                 </div>
-            </div>
-        </div>
-        {% endfor %}
-    {% endif %}
-{% endfor %}
+            object['id']=test1.value;
+            object['quantity']=test.value;
+            object['total'] = test2.value;
+            object['csrfmiddlewaretoken'] = getCookie('csrftoken');
 
+
+            fetch(`{% url 'update-cart' %}`, {
+
+                method: "PUT",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-CSRFToken":getCookie('csrftoken'),
+                },
+                    credentials: "same-origin",
+                    body: JSON.stringify(object)
+                }).then(function(response){
+                    console.log(response);
+                    if (response.ok) {
+                        alert("product updated in cart");
+                        location.href = "/productpage/addedtocart/mycart/";
+                    }
+                });
+        }
+    </script>
 {% endblock  %}

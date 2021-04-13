@@ -18,14 +18,8 @@ class ViewCart(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        cart_products = Cart.objects.all()
-
-        for cart in cart_products:
-            print(cart)
-            for product in cart.product.all():
-                print(product.description)
-
-        # serializer = self.get_serializer(queryset)
+        for data in queryset:
+            print(data.id)
         return Response({'cart': queryset,'logged_in_user':request.user})
 
 
@@ -50,4 +44,35 @@ class AddToCart(APIView):
             print(111111111111111, serializer.validated_data)
             serializer.save()
             return JsonResponse({'msg': serializer.data},status=200)
-        # return Response({'msg': serializer.data},template_name='product/productpage.html')
+
+
+class UpdateCart(APIView):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def put(self,request,*args, **kwargs):
+        update_data = request.data
+        print(update_data)
+
+        cart_data = Cart.objects.get(pk=request.data['id'])
+
+        for product_data in cart_data.product.all():
+            update_data['total'] = product_data.price*int(update_data['quantity'])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+        
+        serializer = AddToCartSerializer(cart_data, data=update_data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        print(22222222222, serializer.validated_data)
+        serializer.save()
+        return JsonResponse({'msg': 'Data Updated!!'}, status=200)
+
+
+
+class DeleteCartItem(APIView):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request, pk=None):
+        data = request.data
+        Cart.objects.get(pk=pk).delete()
+        print(7777777777777)
+        return redirect('/productpage/')

@@ -1,0 +1,173 @@
+{% extends 'base.html'  %}
+{% load rest_framework %}
+{% block content %}
+<main class="pt-4">
+    <div class="container wow fadeIn">
+        <!-- Heading -->
+        <h2 class="my-5 h2 text-center">Checkout form</h2>
+        <!--Grid row-->
+        <div class="row">
+            <!--Grid column-->
+            <div class="col-md-8 mb-4">
+                <!--Card-->
+                <div class="card">
+                    <!--Card content-->
+                    <form class="card-body">
+                        <!--Grid row-->
+                        <div class="row">
+                            <!--Grid column-->
+                            <div class="col-md-6 mb-2">
+                                <!--firstName-->
+                                <div class="md-form ">
+                                    <input type="text" id="firstName" class="form-control" value="{{user.first_name}}" disabled>
+                                    <label for="firstName" class="">First name</label>
+                                </div>
+                            </div>
+                            <!--Grid column-->
+                            <!--Grid column-->
+                            <div class="col-md-6 mb-2">
+                                <!--lastName-->
+                                <div class="md-form">
+                                    <input type="text" id="lastName" class="form-control" value="{{user.last_name}}" disabled>
+                                    <label for="lastName" class="">Last name</label>
+                                </div>
+                            </div>
+                            <!--Grid column-->
+                        </div>
+                        <!--Grid row-->
+
+                        <!--Username-->
+                        <div class="md-form input-group pl-0 mb-5">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">@</span>
+                            </div>
+                            <input disabled type="text" value="{{user.username}}" class="form-control py-0" placeholder="Username" aria-describedby="basic-addon1">
+                        </div>
+
+                        <!--email-->
+                        <div class="md-form mb-5">
+                            <input type="text" id="email" value="{{user.email}}" disabled class="form-control" placeholder="youremail@example.com">
+                            <label for="email" class="">Email (optional)</label>
+                        </div>
+
+                        <!--address--> <!-- Modal button -->
+                        Click to:
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            Add Address
+                        </button>
+
+
+
+                        <div class="md-form mt-2 mb-5">
+                            <select class="form-control qty" id="quantity" name="quantity">
+                                {% for address in addresses %}
+                                    <option >{{address.permanent_address}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="address" class="">Select Address</label>
+                        </div>
+
+
+
+
+
+                        <hr>
+
+<!--                        <button onclick="addCard(event)" type="button" class="btn btn-primary">-->
+<!--                            Add Card-->
+<!--                        </button>-->
+
+                        <div class="row mt-2">
+                            <div class="col-md-6 mb-3">
+                            <!--    <select class="form-control qty" id="cardnumber" name="quantity">
+                                    {% for card_data in card %}
+                                        <option>{{ card_data.card_number }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="address" class="">Select Card to pay</label> -->
+                                {% if cart_total %}
+                                    You need to pay<h2> Rs. {{cart_total}}</h2>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr class="mb-4">
+<!--                        <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>-->
+
+                    </form>
+
+                </div>
+                <!--/.Card-->
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-4 mb-4">
+
+                <!-- Heading -->
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Your cart</span>
+                    <span class="badge badge-secondary badge-pill">{{total_items_in_cart}}</span>
+                </h4>
+
+                <!-- Cart -->
+                {% for products in cart %}
+                    {% for product_data in products.product.all %}
+                    <ul class="list-group mb-3 z-depth-1">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">{{ product_data.name }}</h6>
+                                <small class="text-muted">{{ product_data.description }}</small>
+                            </div>
+                            <span class="text-muted">{{ product_data.price }} X {{products.quantity}}</span>
+                        </li>
+                    </ul>
+                    {% endfor %}
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Total (INR)</span>
+                    <strong>Rs. {{cart_total}}</strong>
+                </li>
+                <!-- Cart -->
+
+                <!-- Promo code -->
+                <!--          <form class="card p-2">-->
+                <!--            <div class="input-group">-->
+                <!--              <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">-->
+                <!--              <div class="input-group-append">-->
+                <!--                <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>-->
+                <!--              </div>-->
+                <!--            </div>-->
+                <!--          </form>-->
+                <!-- Promo code -->
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+    </div>
+</main>
+<div style="margin-left:100px; margin-bottom:50px;" >
+    <form action="{% url 'success' %}" method="post">
+         {% csrf_token %}
+         <script src="https://checkout.stripe.com/checkout.js"
+              class="stripe-button"
+              data-key="{{ key }}"
+              data-description="Payment Gateway"
+              data-amount="{{cart_total}}"
+              data-locale="auto">
+         </script>
+    </form>
+</div>
+{% include 'checkout/address.html' %}
+
+<script>
+    function addCard(e){
+        e.preventDefault();
+        location.href = "{% url 'card-view' %}";
+    }
+</script>
+{% endblock  %}

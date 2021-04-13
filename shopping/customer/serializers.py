@@ -4,7 +4,7 @@ from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from django.contrib.auth import get_user_model
 from rest_auth.registration.serializers import RegisterSerializer
-from .models import UserProfile
+from .models import UserProfile, Address
 
 User = get_user_model()
 
@@ -66,3 +66,10 @@ class UserLoginSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ["id","country", "state", "city", "pincode", "street_number", "permanent_address",
+                  "type_of_address", "user"]

@@ -111,7 +111,7 @@ class DeleteUserAccount(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'customer/login.html'
 

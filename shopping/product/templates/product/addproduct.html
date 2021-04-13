@@ -24,7 +24,7 @@
 <div class="add-product" style="margin-top:10px; text-align: center;">
     <h3>Add Product</h3>
 </div>
-<form class="add-product-form" action="" method="POST" enctype="multipart/form-data">
+<form class="add-product-form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% render_form serializer %}
 

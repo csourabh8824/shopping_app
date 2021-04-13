@@ -55,9 +55,13 @@
                     <li class="nav-item" id="mycart">
                         <a class="nav-link" href="{% url 'my-cart' %}">Cart</a>
                     </li>
+                    <li class="nav-item" id="checkout">
+                        <a class="nav-link" href="{% url 'checkout-page' %}">Checkout</a>
+                    </li>
                     <li class="nav-item" id="logout">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
+
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'registration' %}">Register</a>
@@ -70,6 +74,13 @@
             </ul>
         </div>
     </nav>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} m-2">{{ message }}</div>
+            {% endfor %}
+        </ul>
+    {% endif %}
     {% block content %}
 
     {% endblock  %}

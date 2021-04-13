@@ -8,3 +8,9 @@ from .models import UserProfile, Address
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ["username", "email", "first_name", "last_name", "password", "mobile_number",
                     "alternate_mobile_number", "gender", "birthdate"]
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ["id", "country", "state", "city", "pincode", "street_number", "permanent_address",
+                  "type_of_address", "user"]

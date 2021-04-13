@@ -24,6 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view(), name="customers"),
     path('', include("customer.urls")),
+    path('checkout/', include("checkout.urls")),
+    path('addcard/', include("card.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()

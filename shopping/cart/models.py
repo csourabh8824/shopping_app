@@ -4,7 +4,7 @@ from product.models import Product
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,unique=False)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, unique=False)
     product = models.ManyToManyField(Product)
     total = models.IntegerField(default=0)
     # updated = models.DateTimeField(auto_now=True)

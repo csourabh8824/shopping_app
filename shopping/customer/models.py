@@ -21,7 +21,12 @@ class Address(models.Model):
         ('HOME', 'Home'),
         ('OFFICE', 'Office'),
     ]
-    country = models.CharField(max_length=15)
+    COUNTRY_CHOICES = [
+        ('INDIA', 'India'),
+        ('AUSTRALIA', 'Australia'),
+        ('ENGLAND', 'England'),
+    ]
+    country = models.CharField(max_length=15, choices=COUNTRY_CHOICES)
     state = models.CharField(max_length=20)
     city = models.CharField(max_length=15)
     pincode = models.IntegerField()

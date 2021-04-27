@@ -12,7 +12,7 @@
                 <!--Card-->
                 <div class="card">
                     <!--Card content-->
-                    <form class="card-body">
+                    <form onsubmit="return false;" class="card-body" method="POST">
                         <!--Grid row-->
                         <div class="row">
                             <!--Grid column-->
@@ -56,16 +56,18 @@
                             Add Address
                         </button>
 
-
-
                         <div class="md-form mt-2 mb-5">
-                            <select class="form-control qty" id="quantity" name="quantity">
+                            <select class="form-control qty" id="address" name="address">
+                                <option>Please Select Address</option>
                                 {% for address in addresses %}
                                     <option >{{address.permanent_address}}</option>
                                 {% endfor %}
                             </select>
                             <label for="address" class="">Select Address</label>
                         </div>
+                        <button type="submit" class="btn btn-success " onclick="submitAddress(event)">
+                            Submit Address
+                        </button>
 
 
 
@@ -165,9 +167,53 @@
 {% include 'checkout/address.html' %}
 
 <script>
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
     function addCard(e){
         e.preventDefault();
         location.href = "{% url 'card-view' %}";
     }
+
+    function submitAddress(e){
+        e.preventDefault();
+        var address = document.getElementById("address");
+        if (address.value == "Please Select Address"){
+            alert("Please Add Address and then select address to submit");
+        }
+        var object = {}
+        object['address_detail']= address.value;
+        fetch(`{% url 'update-address' %}`, {
+
+                method: "PUT",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-CSRFToken":getCookie('csrftoken'),
+                },
+                    credentials: "same-origin",
+                    body: JSON.stringify(object)
+                }).then(function(response){
+                    console.log(response);
+                    if (response.ok) {
+                        alert("Address saved successfully! Now you can pay");
+
+                    }
+                });
+    }
+
 </script>
 {% endblock  %}

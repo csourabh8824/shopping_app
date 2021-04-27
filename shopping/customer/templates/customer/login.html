@@ -49,7 +49,7 @@
                         "Content-Type": "application/json; charset=utf-8",
                     },
                         credentials: "same-origin",
-                        body: JSON.stringify({"username":inputTags[1].value,"password":inputTags[2].value})
+                        body: JSON.stringify({"username":inputTags[2].value,"password":inputTags[3].value})
                 }).then(function(response){
                 console.log(response)
                     if (response.ok) {

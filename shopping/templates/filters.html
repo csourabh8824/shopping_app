@@ -1,0 +1,105 @@
+<form onsubmit="return false;" action="" method="GET">
+    <li>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                filter
+            </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li class="ml-2">
+                        Products:
+                        <br>
+                        <div id="unique_products" class="ml-5">
+                            {% for data in unique_products %}
+                                <input name="pl" id="unique_products_{{data}}" name="unique_products_{{data}}" type="checkbox" value="{{data}}">{{data}}<br>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="ml-2">
+                        Color:
+                        <br>
+                        <div id="unique_colors" class="ml-5">
+                            {% for data in unique_colors %}
+                                <input name="pl1" type="checkbox" value="{{data}}">{{data}}<br>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="ml-2">
+                        Size:
+                        <br>
+                        <div id="unique_sizes" class="ml-5">
+                            {% for data in unique_sizes %}
+                                <input name="pl2" type="checkbox" value="{{data}}">{{data}}<br>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="ml-2">
+                        Rating:
+                        <br>
+                        <div id="unique_rating" class="ml-5">
+                            {% for data in unique_ratings %}
+                                <input name="pl3" type="checkbox" value="{{data}}">{{data}}<br>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="ml-2">
+                        Price less then: <span id="value1"></span>
+                        <br>
+                        <div id="" class="ml-5">
+                            <input id="range" name="pl4" type="range"  min="1"  max="10000" value="20" oninput="updateTextInput(this.value);">{{data}}<br>
+                        </div>
+                    </li>
+                    <button id="checkbox-values" class="btn-outline-info btn-sm mt-2 ml-2">Apply filters</button>
+                </ul>
+        </div>
+    </li>
+</form>
+
+<script>
+    document.getElementById('checkbox-values').onclick = function() {
+    var values1 = [];
+    var values2 = [];
+    var values3 = [];
+    var values4 = [];
+        var markedCheckbox = document.getElementsByName('pl');
+        for (var checkbox of markedCheckbox) {
+            if (checkbox.checked)
+                values1.push(checkbox.value);
+                document.body.append(checkbox.value + ' ');
+        }
+        var markedCheckbox1 = document.getElementsByName('pl1');
+        for (var checkbox of markedCheckbox1) {
+            if (checkbox.checked)
+                values2.push(checkbox.value);
+                document.body.append(checkbox.value + ' ');
+        }
+        var markedCheckbox2 = document.getElementsByName('pl2');
+        for (var checkbox of markedCheckbox2) {
+            if (checkbox.checked)
+                values3.push(checkbox.value);
+                document.body.append(checkbox.value + ' ');
+        }
+        var markedCheckbox3 = document.getElementsByName('pl3');
+        for (var checkbox of markedCheckbox3) {
+            if (checkbox.checked)
+                values4.push(checkbox.value);
+                document.body.append(checkbox.value + ' ');
+        }
+
+        var price = document.getElementById('range').value;
+        price_in_int = parseInt(price);
+        alert(price_in_int);
+        console.log(typeof(price_in_int));
+
+
+        alert(values1.join(', '));
+        alert(values2.join(', '));
+        alert(values3.join(', '));
+        alert(values4.join(', '));
+        location.href = `{% url 'product-page' %}?product_values=${encodeURIComponent(values1.join(', '))}&color_values=${encodeURIComponent(values2.join(', '))}&size_values=${encodeURIComponent(values3.join(', '))}&rating=${encodeURIComponent(values4.join(', '))}&price_less_then=${encodeURIComponent(price_in_int)}`;
+    }
+
+    function updateTextInput() {
+        var value1 = document.getElementById("range").value;
+        document.getElementById('value1').innerHTML =  value1 + " Rs";
+    }
+</script>

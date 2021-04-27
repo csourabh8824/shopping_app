@@ -44,7 +44,7 @@ class UserLoginSerializer(serializers.Serializer):
     def validate(self, attrs):
         username = attrs.get('username')
         password = attrs.get('password')
-
+        print(1000000,username)
         if username and password:
             if User.objects.filter(username=username).exists():
                 user = authenticate(request=self.context.get('request'),

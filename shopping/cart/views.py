@@ -57,14 +57,13 @@ class UpdateCart(APIView):
         cart_data = Cart.objects.get(pk=request.data['id'])
 
         for product_data in cart_data.product.all():
-            update_data['total'] = product_data.price*int(update_data['quantity'])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-        
+            update_data['total'] = product_data.price*int(update_data['quantity'])
+
         serializer = AddToCartSerializer(cart_data, data=update_data, partial=True)
         serializer.is_valid(raise_exception=True)
         print(22222222222, serializer.validated_data)
         serializer.save()
         return JsonResponse({'msg': 'Data Updated!!'}, status=200)
-
 
 
 class DeleteCartItem(APIView):
@@ -76,3 +75,5 @@ class DeleteCartItem(APIView):
         Cart.objects.get(pk=pk).delete()
         print(7777777777777)
         return redirect('/productpage/')
+
+

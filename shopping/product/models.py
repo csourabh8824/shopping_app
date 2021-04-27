@@ -12,7 +12,7 @@ class Product(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=100, default="Awesome Product")
     material = models.CharField(max_length=30)
-    image = models.ImageField(default='default.jpg',upload_to='product_images')
+    image = models.ImageField(default='default.jpg', upload_to='product_images')
     color = models.CharField(max_length=10)
     size = models.CharField(max_length=10)
     washable = models.CharField(max_length=5, choices=WASHABLE_CHOICES)

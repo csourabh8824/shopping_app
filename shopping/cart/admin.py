@@ -6,5 +6,5 @@ from .models import Cart
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display =["id","user", "get_products" ,"total", "quantity"]
-    raw_id_fields = ["product"]
+    list_display =["id","user", "get_products" ,"total", "quantity", "address"]
+

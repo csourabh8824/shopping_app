@@ -1,0 +1,46 @@
+{% extends 'base.html'  %}
+{% load rest_framework %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+{% endblock head %}
+
+{% block content %}
+    <h2  style="color:purple; margin-left:160px;">Past Orders</h2>
+    {% for order in past_orders %}
+        <div class="card container mt-5 mb-5">
+            <h5 class="card-header text-center" style="background-color:black; color:white; width:100%; font-weight:bold;">Product</h5>
+            <div class="row">
+                <div class="col-sm">
+                    <h5 class="card-title mt-2 text-center" style="font-weight:bold;"></h5>
+                    <img height="400px" width="300px" src="{{ order.product.image.url }}" >
+                </div>
+                <div class="col-sm text-center">
+                    <h5 class="mt-2" style="font-weight:bold;" style="font-weight:bold;">Description: {{order.product.description}}</h5>
+                    <hr>
+                    <h6 style="font-weight:bold;">Color : {{order.product.color}}</h6>
+                    <hr>
+                    <h6 style="font-weight:bold;">Material : {{order.product.material}}</h6>
+                    <hr>
+                    <h6 style="font-weight:bold;">Size : {{order.product.size}}</h6>
+                    <hr>
+                    <h6 style="font-weight:bold;">Washable : {{order.product.washable}}</h6>
+                    <hr>
+                    <h3 style="font-weight:bold; color:red;">Delivery Estimated date: {{order.to_be_delivered}}</h3>
+                    <h3 style="font-weight:bold; color:blue;;">Delivery Address: {{order.address}}</h3>
+                </div>
+                <div class="col-sm" style="margin-top:180px;">
+        <!--            <a href="#"><i class="fas fa-thumbs-up"></i></a>-->
+                    <h4 class="pricetag1" style="font-weight:bold; margin-left:130px;">price : {{order.product.price}}</h4>
+                    <h4 class="quantity" style="font-weight:bold; margin-left:130px;">Quantity taken : {{order.quantity}}</h4>
+
+
+
+
+                </div>
+
+                 </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

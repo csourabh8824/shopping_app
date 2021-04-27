@@ -36,11 +36,17 @@
             <span style="color: Mediumslateblue;">
                 <i class="fas fa-shopping-bag fa-lg ml-5"></i>
             </span>
+            <form onsubmit="return false;" class="form-inline my-2 my-lg-0 ml-5" method="GET">
+                <input id="search" class="form-control mr-sm-2" type="search" placeholder="Search for products" aria-label="Search">
+                <button onclick="searchProduct(event)" type="submit"  class="btn btn-outline-success">Search</button>
+<!--                <a href="{% url 'product-page' %}?search={{tshirt}}" class="btn btn-outline-success">Search</a>-->
+            </form>
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item " id="user">
                         <div style="color:yellow;" class="nav-link" href="{% url 'account-page' %}">Welcome {{user}}</div>
                     </li>
+
                     <li class="nav-item" id="home">
                         <a class="nav-link" href="{% url 'product-page' %}">Home</a>
                     </li>
@@ -58,9 +64,13 @@
                     <li class="nav-item" id="checkout">
                         <a class="nav-link" href="{% url 'checkout-page' %}">Checkout</a>
                     </li>
+                    <li class="nav-item" id="orders">
+                        <a class="nav-link" href="{% url 'past-orders' %}">Orders</a>
+                    </li>
                     <li class="nav-item" id="logout">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
+
 
                 {% else %}
                     <li class="nav-item">
@@ -72,6 +82,7 @@
                     </li>
                 {% endif %}
             </ul>
+
         </div>
     </nav>
     {% if messages %}
@@ -84,5 +95,34 @@
     {% block content %}
 
     {% endblock  %}
+
 </body>
+<script>
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function searchProduct(e){
+        e.preventDefault();
+
+        var input = document.getElementById("search");
+        var data = {search:input.value}
+        location.href = `{% url 'product-page' %}?search=${encodeURIComponent(data.search)}`;
+
+    }
+</script>
+
 </html>

@@ -1,3 +1,4 @@
+import logging
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from rest_framework.permissions import IsAuthenticated
@@ -9,17 +10,19 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from product.models import Product
 
+logger = logging.getLogger(__name__)
+
 
 class ViewCart(ListAPIView):
     queryset = Cart.objects.all()
+
     # serializer_class = AddToCartSerializer
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'cart/cartpage.html'
 
     def list(self, request, *args, **kwargs):
+        logger.info("Products in cart")
         queryset = self.filter_queryset(self.get_queryset())
-        for data in queryset:
-            print(data.id)
         return Response({'cart': queryset,'logged_in_user':request.user})
 
 
@@ -43,6 +46,7 @@ class AddToCart(APIView):
         if serializer.is_valid(raise_exception=True):
             print(111111111111111, serializer.validated_data)
             serializer.save()
+            logger.info("Product added in cart")
             return JsonResponse({'msg': serializer.data},status=200)
 
 
@@ -63,6 +67,7 @@ class UpdateCart(APIView):
         serializer.is_valid(raise_exception=True)
         print(22222222222, serializer.validated_data)
         serializer.save()
+        logger.info("Product updated in cart")
         return JsonResponse({'msg': 'Data Updated!!'}, status=200)
 
 
@@ -73,7 +78,7 @@ class DeleteCartItem(APIView):
     def get(self, request, pk=None):
         data = request.data
         Cart.objects.get(pk=pk).delete()
-        print(7777777777777)
+        logger.info("Product deleted from cart")
         return redirect('/productpage/')
 
 

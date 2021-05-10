@@ -63,16 +63,11 @@
                                     <option >{{address.permanent_address}}</option>
                                 {% endfor %}
                             </select>
-                            <label for="address" class="">Select Address</label>
+
+                            <button id="submit" type="submit" class="btn btn-success mt-2" onclick="submitAddress(event)">
+                                Submit Address
+                            </button>
                         </div>
-                        <button type="submit" class="btn btn-success " onclick="submitAddress(event)">
-                            Submit Address
-                        </button>
-
-
-
-
-
                         <hr>
 
 <!--                        <button onclick="addCard(event)" type="button" class="btn btn-primary">-->
@@ -131,25 +126,10 @@
                     <span>Total (INR)</span>
                     <strong>Rs. {{cart_total}}</strong>
                 </li>
-                <!-- Cart -->
-
-                <!-- Promo code -->
-                <!--          <form class="card p-2">-->
-                <!--            <div class="input-group">-->
-                <!--              <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">-->
-                <!--              <div class="input-group-append">-->
-                <!--                <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>-->
-                <!--              </div>-->
-                <!--            </div>-->
-                <!--          </form>-->
-                <!-- Promo code -->
-
             </div>
             <!--Grid column-->
-
         </div>
         <!--Grid row-->
-
     </div>
 </main>
 <div style="margin-left:100px; margin-bottom:50px;" >
@@ -158,8 +138,10 @@
          <script src="https://checkout.stripe.com/checkout.js"
               class="stripe-button"
               data-key="{{ key }}"
+                 data-label="Proceed to pay"
+                 data-currency="inr"
               data-description="Payment Gateway"
-              data-amount="{{cart_total}}"
+              data-amount="{{cart_total1}}"
               data-locale="auto">
          </script>
     </form>
@@ -213,6 +195,12 @@
 
                     }
                 });
+    }
+
+    document.getElementById("submit").disabled = true;
+
+    document.getElementById("address").onclick = function() {
+        document.getElementById("submit").disabled = false;
     }
 
 </script>

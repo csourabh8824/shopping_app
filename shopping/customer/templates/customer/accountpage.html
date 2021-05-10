@@ -88,7 +88,7 @@ form{
                         <div class="col-md-6"><label class="labels">Gender</label><input type="text" class="form-control" placeholder="gender" value="{{user.gender}}"></div>
                         <div class="col-md-6"><label class="labels">Birthdate</label><input id="datepicker" type="text" class="form-control" value="{{user.birthdate|date:'Y-m-d'}}" ></div>
                     </div>
-                    <div class="mt-5 text-center"><button onclick="update()" class="btn btn-primary profile-button" type="button">Update</button></div>
+                    <div class="mt-5 text-center"><button id="update_button" onclick="update()" class="btn btn-primary profile-button" type="button">Update</button></div>
                     <div class="mt-5 text-center"><button onclick="deleteUserAccount()" class="btn btn-danger" type="button">Delete Account</button></div>
 
                 </div>
@@ -100,6 +100,7 @@ form{
 </div>
 
 <script>
+
     function getCookie(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -122,13 +123,13 @@ form{
 
     function update(){
         var object = {};
-        object['first_name'] = inputTags[0].value;
-        object['last_name'] = inputTags[1].value;
-        object['mobile_number'] = inputTags[2].value;
-        object['alternate_mobile_number'] = inputTags[3].value;
-        object['email_id'] = inputTags[4].value;
-        object['gender'] = inputTags[5].value;
-        object['birthdate'] = inputTags[6].value;
+        object['first_name'] = inputTags[1].value;
+        object['last_name'] = inputTags[2].value;
+        object['mobile_number'] = inputTags[3].value;
+        object['alternate_mobile_number'] = inputTags[4].value;
+        object['email_id'] = inputTags[5].value;
+        object['gender'] = inputTags[6].value;
+        object['birthdate'] = inputTags[7].value;
         object['csrfmiddlewaretoken'] = getCookie('csrftoken');
         fetch(`{% url 'account-page' %}`, {
             method: "PUT",
@@ -161,7 +162,7 @@ form{
                 "X-CSRFToken":getCookie('csrftoken'),
             },
                 credentials: "same-origin",
-                body: JSON.stringify(object)
+                body: JSON.stringify(inputTags[5].value)
         }).then(function(response){
             console.log(response);
             if (response.ok) {
@@ -170,6 +171,15 @@ form{
         });
     }
 
+    document.getElementById("update_button").disabled = true;
+
+    for (index = 0; index < inputTags.length; ++index) {
+        inputTags[index].addEventListener("click", enableUpdateButton);
+    }
+
+    function enableUpdateButton(){
+        document.getElementById("update_button").disabled = false;
+    }
 </script>
 
 {% endblock %}

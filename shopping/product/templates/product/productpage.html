@@ -30,102 +30,70 @@
 
 </style>
 
-
-<!--    <section class="text-center mb-4" id="product-section">-->
-
-<!--        <div class="row wow fadeIn">-->
-<!--            {% for product in products %}-->
-<!--                <div class="col-lg-3 col-md-6 mb-4">-->
-<!--                    <div class="card">-->
-<!--                        <div class="view overlay">-->
-<!--&lt;!&ndash;                            {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}&ndash;&gt;-->
-<!--                            <a href="{% url 'product-details' product.id %}"><img height="200px" width="200px" src="{{ product.image.url }}" class="zoom card-img-top"></a>-->
-<!--                        </div>-->
-<!--                        <div class="card-body text-center">-->
-<!--                            <a href="" class="grey-text">-->
-<!--                                <h5>{{ product.name }}</h5>-->
-<!--                            </a>-->
-<!--                            <h5>-->
-<!--                                <strong>-->
-<!--                                    <h4 style="color:#007bff;">-->
-<!--                                       Rs.{{product.price}}-->
-<!--                                    </h4>-->
-<!--                                </strong>-->
-<!--                            </h5>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            {% endfor %}-->
-<!--        </div>-->
-<!--    </section>-->
-
-
-        <section class="text-center mb-4" id="product-section">
-            <div class="btn-group mb-5 float-right">
-                <button type="button" class="ml-2 btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Sort By
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item"  onclick="alertMe(event)">Price:High to Low</a>
-                    <a class="dropdown-item" onclick="alertMe2(event)">Price:Low to High</a>
-                    <a class="dropdown-item" onclick="alertMe3(event)">What's New ?</a>
+<section class="text-center mb-4" id="product-section">
+    <div class="btn-group mb-5 float-right">
+        <button type="button" class="ml-2 btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort By
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item"  onclick="alertMe(event)">Price:High to Low</a>
+            <a class="dropdown-item" onclick="alertMe2(event)">Price:Low to High</a>
+            <a class="dropdown-item" onclick="alertMe3(event)">What's New ?</a>
+        </div>
+    </div>
+    <div class="btn-group mb-5 float-right">
+        {% include 'filters.html' %}
+    </div>
+    <div class="row wow fadeIn">
+        {% for product in serializer %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <div class="view overlay">
+<!--                            {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}-->
+                        <a href="{% url 'product-details' product.id %}"><img height="200px" width="200px" src="{{ product.image }}" class="zoom card-img-top"></a>
+                    </div>
+                    <div class="card-body text-center">
+                        <a href="" class="grey-text">
+                            <h5>{{ product.name }}</h5>
+                        </a>
+                        <h5>
+                            <strong>
+                                <h4 style="color:#007bff;">
+                                   Rs.{{product.price}}
+                                </h4>
+                            </strong>
+                        </h5>
+                    </div>
                 </div>
             </div>
-            <div class="btn-group mb-5 float-right">
-                {% include 'filters.html' %}
-            </div>
-            <div class="row wow fadeIn">
-                {% for product in serializer %}
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card">
-                            <div class="view overlay">
-    <!--                            {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}-->
-                                <a href="{% url 'product-details' product.id %}"><img height="200px" width="200px" src="{{ product.image }}" class="zoom card-img-top"></a>
-                            </div>
-                            <div class="card-body text-center">
-                                <a href="" class="grey-text">
-                                    <h5>{{ product.name }}</h5>
-                                </a>
-                                <h5>
-                                    <strong>
-                                        <h4 style="color:#007bff;">
-                                           Rs.{{product.price}}
-                                        </h4>
-                                    </strong>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-    </section>
-    <div class="text-xs-center">
-        <ul class="pagination" style="margin-left:600px;">
-            {% for page in pages %}
-                <li class="page-item"><a class="page-link" href="{% url 'product-page' %}?page={{page}}">{{page}}</a></li>
-            {% endfor %}
-        </ul>
+        {% endfor %}
     </div>
+</section>
 
-    <script>
-        function alertMe(e){
-            e.preventDefault();
-            alert("clicked");
-            location.href = `{% url 'product-page' %}?order_by=price`;
-        }
+<div class="text-xs-center">
+    <ul class="pagination" style="margin-left:600px;">
+        {% for page in pages %}
+            <li class="page-item"><a class="page-link" href="{% url 'product-page' %}?page={{page}}">{{page}}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 
-        function alertMe2(e){
-            e.preventDefault();
-            alert("clicked1");
-            location.href= `{% url 'product-page' %}?order_by1=price`;
-        }
+<script>
+    function alertMe(e){
+        e.preventDefault();
+        location.href = `{% url 'product-page' %}?order_by=price`;
+    }
 
-        function alertMe3(e){
-            e.preventDefault();
-            alert("clicked3");
-            location.href= `{% url 'product-page' %}?whats_new=id`;
-        }
+    function alertMe2(e){
+        e.preventDefault();
+        location.href= `{% url 'product-page' %}?order_by1=price`;
+    }
 
-    </script>
+    function alertMe3(e){
+        e.preventDefault();
+        location.href= `{% url 'product-page' %}?whats_new=id`;
+    }
+
+</script>
 
 {% endblock  %}

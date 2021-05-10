@@ -2,6 +2,10 @@
 {% load rest_framework %}
 {% block content %}
     <h1 style="color:white; margin-left:350px;">Cart Items:</h1>
+    <div class="container mt-4 mb-4 ">
+        <a class="btn btn-success float-right" href="{% url 'checkout-page' %}">Checkout</a>
+        <hr>
+    </div>
     {% for products in cart %}
         {% if products.user == logged_in_user %}
             {% for product in products.product.all %}
@@ -27,6 +31,7 @@
                         border-radius: 5px;
                     }
                 </style>
+
                 <div class="card container mt-5">
 
                     <h5 class="card-header text-center" style="width:100%; font-weight:bold;">Product</h5>
@@ -90,6 +95,7 @@
                          </div>
                     </div>
                 </div>
+
             {% endfor %}
         {% endif %}
     {% endfor %}

@@ -45,21 +45,23 @@
                         Price less then: <span id="value1"></span>
                         <br>
                         <div id="" class="ml-5">
-                            <input id="range" name="pl4" type="range"  min="1"  max="10000" value="20" oninput="updateTextInput(this.value);">{{data}}<br>
+                            <input id="range" name="pl4" type="range"  min="1"  max="10000" value="10000" oninput="updateTextInput(this.value);">{{data}}<br>
                         </div>
                     </li>
-                    <button id="checkbox-values" class="btn-outline-info btn-sm mt-2 ml-2">Apply filters</button>
+                    <button onsubmit="return false;" id="checkbox-values" class="btn-outline-info btn-sm mt-2 ml-2">Apply filters</button>
+                    <input onclick="uncheckAll()" type="button" class="btn-outline-danger" value="Remove Filter">
                 </ul>
         </div>
     </li>
+
 </form>
 
 <script>
     document.getElementById('checkbox-values').onclick = function() {
-    var values1 = [];
-    var values2 = [];
-    var values3 = [];
-    var values4 = [];
+        var values1 = [];
+        var values2 = [];
+        var values3 = [];
+        var values4 = [];
         var markedCheckbox = document.getElementsByName('pl');
         for (var checkbox of markedCheckbox) {
             if (checkbox.checked)
@@ -87,19 +89,35 @@
 
         var price = document.getElementById('range').value;
         price_in_int = parseInt(price);
-        alert(price_in_int);
-        console.log(typeof(price_in_int));
-
-
-        alert(values1.join(', '));
-        alert(values2.join(', '));
-        alert(values3.join(', '));
-        alert(values4.join(', '));
         location.href = `{% url 'product-page' %}?product_values=${encodeURIComponent(values1.join(', '))}&color_values=${encodeURIComponent(values2.join(', '))}&size_values=${encodeURIComponent(values3.join(', '))}&rating=${encodeURIComponent(values4.join(', '))}&price_less_then=${encodeURIComponent(price_in_int)}`;
+        save();
+
     }
 
     function updateTextInput() {
         var value1 = document.getElementById("range").value;
         document.getElementById('value1').innerHTML =  value1 + " Rs";
     }
+
+    function uncheckAll(){
+        $('input[type="checkbox"]:checked').prop('checked',false);
+        location.href = `{% url 'product-page' %}`;
+        window.localStorage.clear();
+    }
+
+    var checkboxes = document.querySelectorAll('input[type=checkbox]');
+
+
+    function save() {
+        for (i = 0; i < checkboxes.length; i++) {
+            localStorage.setItem(checkboxes[i].value,checkboxes[i].checked);
+        }
+    }
+
+    function load() {
+        for (i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = localStorage.getItem(checkboxes[i].value) === 'true' ? true:false;
+        }
+    }
+    load();
 </script>
